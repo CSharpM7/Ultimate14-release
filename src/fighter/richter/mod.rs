@@ -40,7 +40,11 @@ pub unsafe fn is_richter(module_accessor: *mut smash::app::BattleObjectModuleAcc
     #[cfg(feature = "devhook")]
     return color==DEFAULT_COLOR;
 
+    let to_return = color < 8;
     return color < 8;
+}
+pub unsafe fn is_alucard(module_accessor: *mut smash::app::BattleObjectModuleAccessor) -> bool {
+    return MotionModule::is_anim_resource(module_accessor, Hash40::new("special_s3"));
 }
 
 const LEAFSHIELD_DISABLE_GROUPS: [WorkId; 6] = [

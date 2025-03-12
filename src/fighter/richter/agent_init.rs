@@ -28,11 +28,15 @@ unsafe extern "C" fn change_status_callback(fighter: &mut L2CFighterCommon) -> L
 
 pub unsafe extern "C" fn agent_start(fighter: &mut L2CFighterCommon)
 {
-    fighter.global_table[CHECK_SPECIAL_S_UNIQ].assign(&L2CValue::Ptr(should_use_special_s as *const () as _));   
-    fighter.global_table[STATUS_CHANGE_CALLBACK].assign(&L2CValue::Ptr(change_status_callback as *const () as _)); 
+    if super::is_richter(fighter.module_accessor) {
+        println!("Richter init");
+        fighter.global_table[CHECK_SPECIAL_S_UNIQ].assign(&L2CValue::Ptr(should_use_special_s as *const () as _));   
+        fighter.global_table[STATUS_CHANGE_CALLBACK].assign(&L2CValue::Ptr(change_status_callback as *const () as _)); 
 
+        let special_s_func: &mut skyline::libc::c_void = std::mem::transmute(fighter.sv_get_status_func(&L2CValue::I32(richter::STATUS_KIND_SPECIAL_S_DASH),&L2CValue::I32(*LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN)).get_ptr());
+        fighter.sv_set_status_func(L2CValue::I32(*FIGHTER_STATUS_KIND_SPECIAL_S),L2CValue::I32(*LUA_SCRIPT_STATUS_FUNC_STATUS_MAIN),special_s_func);
+    }
 }
 pub fn install(agent: &mut smashline::Agent) {
-    agent.on_init(agent_start);
     agent.on_start(agent_start);
 }

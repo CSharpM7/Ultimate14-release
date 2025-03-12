@@ -52,21 +52,23 @@ pub unsafe extern "C" fn fly_main(weapon: &mut L2CWeaponCommon) -> L2CValue {
 pub unsafe extern "C" fn have_main(weapon: &mut L2CWeaponCommon) -> L2CValue {
     let original = smashline::original_status(Main, weapon, *WEAPON_SIMON_AXE_STATUS_KIND_HAVED)(weapon);
     if is_axe(weapon.module_accessor) {
+        println!("Book?");
         MotionModule::set_rate(weapon.module_accessor,0.0);
     }
     return original;
 }
 
 pub unsafe extern "C" fn hop_main(weapon: &mut L2CWeaponCommon) -> L2CValue {
+    if !is_axe(weapon.module_accessor) {
+        return smashline::original_status(Main, weapon, *WEAPON_SIMON_AXE_STATUS_KIND_HOP)(weapon);
+    }
+    
     let mut offset = VECTOR_ZERO;
     ModelModule::joint_global_offset_from_top(weapon.module_accessor, Hash40::new("leafshield4"), &mut offset);
     if LinkModule::is_model_constraint(weapon.module_accessor) {
         LinkModule::remove_model_constraint(weapon.module_accessor, true);
     }
 
-    if !is_axe(weapon.module_accessor) {
-        return smashline::original_status(Main, weapon, *WEAPON_SIMON_AXE_STATUS_KIND_HOP)(weapon);
-    }
     let owner_id = WorkModule::get_int(weapon.module_accessor, *WEAPON_INSTANCE_WORK_ID_INT_ACTIVATE_FOUNDER_ID) as u32;
     if sv_battle_object::is_active(owner_id) {
         let owner = sv_battle_object::module_accessor(owner_id);

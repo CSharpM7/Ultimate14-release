@@ -8,11 +8,13 @@ unsafe extern "C" fn game_specialn(agent: &mut L2CAgentBase) {
     if macros::is_excute(agent) {
         ArticleModule::shoot(agent.module_accessor, *FIGHTER_SIMON_GENERATE_ARTICLE_AXE, ArticleOperationTarget(*ARTICLE_OPE_TARGET_LAST), false);
         super::super::super::set_book(agent.module_accessor, true);
+        ArticleModule::change_status(agent.module_accessor, *FIGHTER_SIMON_GENERATE_ARTICLE_AXE, richter::BOOK_STATUS_KIND_SHIELD, ArticleOperationTarget(*ARTICLE_OPE_TARGET_LAST));
     }
     frame(agent.lua_state_agent, 24.0);
     if macros::is_excute(agent) {
         ArticleModule::generate_article(agent.module_accessor, *FIGHTER_SIMON_GENERATE_ARTICLE_AXE, false, -1);
         ArticleModule::shoot(agent.module_accessor, *FIGHTER_SIMON_GENERATE_ARTICLE_AXE, ArticleOperationTarget(*ARTICLE_OPE_TARGET_LAST), false);
+        ArticleModule::change_status(agent.module_accessor, *FIGHTER_SIMON_GENERATE_ARTICLE_AXE, richter::BOOK_STATUS_KIND_SHIELD, ArticleOperationTarget(*ARTICLE_OPE_TARGET_LAST));
     }
 }
 

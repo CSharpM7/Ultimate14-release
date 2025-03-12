@@ -8,7 +8,9 @@ unsafe fn book_update(fighter: &mut L2CFighterCommon) {
 }
 pub unsafe extern "C" fn richter_frame(fighter: &mut L2CFighterCommon) {
     if let Some(info) = FighterInfo::get_common(fighter) {
-        book_update(fighter);
+        if super::is_richter(fighter.module_accessor) {
+            book_update(fighter);
+        }
     }
 }
 

@@ -137,27 +137,28 @@ pub unsafe extern "C" fn expression_specialhi_2(agent: &mut L2CAgentBase) {
 }
 
 pub unsafe extern "C" fn game_specialhi_3(agent: &mut L2CAgentBase) {
+    let mut damage = 4.0;
+    let mut angle = 280 as u64;
+    let mut kbg = 100;
+    let mut bkb = 30;
+    frame(agent.lua_state_agent, 1.0); 
     if is_excute(agent) {
-        let init_size = 12.5;
-        macros::ATTACK(agent, 0, 0, Hash40::new("rot"), 1.1, 365, 50, 85, 50, init_size, 0.0, 2.0, 2.25, None,None,None, 0.5, 1.5, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, true, 0, 0.0, 7, false, false, false, false, true, *COLLISION_SITUATION_MASK_A, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-        macros::ATTACK(agent, 1, 0, Hash40::new("rot"), 1.1, 20, 50, 125, 50, init_size, 0.0, 2.0, 2.25, None,None,None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, true, 0, 0.0, 7, false, false, false, false, true, *COLLISION_SITUATION_MASK_G, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-
-        macros::ATTACK(agent, 2, 0, Hash40::new("sword1"), 1.1, 367, 50, 65, 50, 3.8, 0.0, 0.0, 1.5, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 4, false, false, false, false, true, *COLLISION_SITUATION_MASK_A, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-        macros::ATTACK(agent, 3, 0, Hash40::new("sword1"), 1.1, 367, 50, 65, 50, 3.2, 0.0, 0.0, 7.4, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 4, false, false, false, false, true, *COLLISION_SITUATION_MASK_A, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-        macros::ATTACK(agent, 4, 0, Hash40::new("sword1"), 1.1, 20, 50, 125, 50, 3.8, 0.0, 0.0, 1.5, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 4, false, false, false, false, true, *COLLISION_SITUATION_MASK_A, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-        macros::ATTACK(agent, 5, 0, Hash40::new("sword1"), 1.1, 20, 50, 125, 50, 3.2, 0.0, 0.0, 7.4, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 4, false, false, false, false, true, *COLLISION_SITUATION_MASK_A, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-
-        AttackModule::set_no_damage_fly_smoke_all(agent.module_accessor, true, false);
-        for i in 2..4 {
-            AttackModule::set_add_reaction_frame(agent.module_accessor, i, 2.0, false);
-        }
-        AttackModule::set_add_reaction_frame(agent.module_accessor, 1, 3.0, false);
+        let init_size = 12.0;
+        macros::ATTACK(agent, 0, 0, Hash40::new("sword1"), damage, angle, kbg, 0, bkb, 3.5, 0.0, 0.0, 0.7, None, None, None, 1.0, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
+        macros::ATTACK(agent, 1, 0, Hash40::new("sword1"), damage, angle, kbg, 0, bkb, 3.8, 0.0, 0.0, 7.0, None, None, None, 1.0, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
     }
-    wait(agent.lua_state_agent, 4.0); 
+    wait(agent.lua_state_agent, 2.0); 
     if is_excute(agent) {
-        AttackModule::set_size(agent.module_accessor, 0, 8.0);
-        AttackModule::set_size(agent.module_accessor, 1, 8.0);
-        //AttackModule::clear(agent.module_accessor,0,false);
+        damage = 3.0;
+        angle = 60 as u64;
+        kbg = 115;
+        bkb = 20;
+        macros::ATTACK(agent, 2, 0, Hash40::new("rot"), damage, angle, kbg, 0, bkb, 8.0, 0.0, 1.0, 0.0, None, None, None, 0.75, 0.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, true, 0, 0.0, 7, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
+    }
+    wait(agent.lua_state_agent, 2.0); 
+    if is_excute(agent) {
+        macros::ATTACK(agent, 0, 0, Hash40::new("sword1"), damage, angle, kbg, 0, bkb, 4.2, 2.5, 0.0, 0.7, None, None, None, 0.75, 1.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
+        macros::ATTACK(agent, 1, 0, Hash40::new("sword1"), damage, angle, kbg, 0, bkb, 4.2, 2.5, 0.0, 7.0, None, None, None, 0.75, 1.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
     }
 }
 
@@ -173,11 +174,15 @@ pub unsafe extern "C" fn effect_specialhi_3(agent: &mut L2CAgentBase) {
     
     loop {
         if macros::is_excute(agent) {
-            macros::EFFECT_FOLLOW(agent, Hash40::new("sys_spin_wind_s"), Hash40::new("top"), 0, 14.5, -1.5, 0, 180, -90, 1, true);
+            macros::EFFECT_FOLLOW(agent, Hash40::new("sys_spin_wind_s"), Hash40::new("top"), 0, 8, -2, 0, 180, -90, 1, true);
+            macros::LAST_EFFECT_SET_RATE(agent, 2);
+            macros::LAST_EFFECT_SET_ALPHA(agent, 0.7);
         }
         wait(agent.lua_state_agent, 6.0);
         if macros::is_excute(agent) {
-            macros::EFFECT_FOLLOW(agent, Hash40::new("sys_spin_wind_s"), Hash40::new("top"), 0, 14.5, -1.0, 0, 90, -90, 1.0, true);
+            macros::EFFECT_FOLLOW(agent, Hash40::new("sys_spin_wind_s"), Hash40::new("top"), 0, 8, -1.5, 0, 90, -90, 1.1, true);
+            macros::LAST_EFFECT_SET_RATE(agent, 2);
+            macros::LAST_EFFECT_SET_ALPHA(agent, 0.7);
         }
         wait(agent.lua_state_agent, 6.0);
     }
@@ -197,26 +202,27 @@ pub unsafe extern "C" fn sound_specialhi_3(agent: &mut L2CAgentBase) {
 pub unsafe extern "C" fn expression_specialhi_3(agent: &mut L2CAgentBase) {
     if macros::is_excute(agent) {
         ItemModule::set_have_item_visibility(agent.module_accessor, false, 0);
-        macros::RUMBLE_HIT(agent, Hash40::new("rbkind_slashss"), 3);
+        macros::RUMBLE_HIT(agent, Hash40::new("rbkind_slashsl"), 3);
         ControlModule::set_rumble(agent.module_accessor, Hash40::new("rbkind_27_spinslash"), 0, true, *BATTLE_OBJECT_ID_INVALID as u32);
     }
 }
 
 pub unsafe extern "C" fn game_specialhi_3_attack(agent: &mut L2CAgentBase) {
+    /* 
     if is_excute(agent) {
         AttackModule::clear_all(agent.module_accessor);
         macros::ATTACK(agent, 0, 0, Hash40::new("rot"), 1.0, 367, 50, 75, 50, 13.0, 0.0, 2.0, 2.25, Some(0.0),Some(0.0),Some(-0.5), 0.5, 0.5, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, true, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_A, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
         macros::ATTACK(agent, 0, 0, Hash40::new("rot"), 1.0, 20, 50, 125, 50, 13.0, 0.0, 2.0, 2.25, Some(0.0),Some(0.0),Some(-0.5), 0.5, 0.5, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, true, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_G, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-        /*
-        macros::ATTACK(agent, 1, 0, Hash40::new("sword1"), 1.1, 365, 50, 55, 50, 3.8, 0.0, 0.0, 1.5, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-        macros::ATTACK(agent, 2, 0, Hash40::new("sword1"), 1.1, 365, 50, 55, 50, 3.2, 0.0, 0.0, 7.4, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
-         */
+        
+        //macros::ATTACK(agent, 1, 0, Hash40::new("sword1"), 1.1, 365, 50, 55, 50, 3.8, 0.0, 0.0, 1.5, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
+        //macros::ATTACK(agent, 2, 0, Hash40::new("sword1"), 1.1, 365, 50, 55, 50, 3.2, 0.0, 0.0, 7.4, None, None, None, 0.5, 1.0, *ATTACK_SETOFF_KIND_THRU, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_cutup"), *ATTACK_SOUND_LEVEL_S, *COLLISION_SOUND_ATTR_CHROM_HIT, *ATTACK_REGION_SWORD);
+        
 
         AttackModule::set_no_damage_fly_smoke_all(agent.module_accessor, true, false);
         for i in 0..3 {
             AttackModule::set_add_reaction_frame(agent.module_accessor, i, 1.0, false);
         }
-    }
+    }*/
     wait(agent.lua_state_agent, 1.0);
     if is_excute(agent){
         AttackModule::clear_all(agent.module_accessor);

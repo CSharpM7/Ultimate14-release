@@ -26,6 +26,22 @@ pub const LANDING_LIGHT_MUL: f32 = 0.5;
 pub const FALL_ACCEL_X_MUL: f32 = 0.75;
 pub const FALL_MAX_X_MUL: f32 = 0.75;
 
+pub unsafe extern "C" fn special_hi_enable_terms(fighter: &mut L2CFighterCommon) {
+    if StatusModule::status_kind(fighter.module_accessor) != *FIGHTER_STATUS_KIND_SPECIAL_HI {
+        WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_LANDING);
+    }
+    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_ATTACK);
+    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_ESCAPE);
+    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_ITEM_THROW);
+    //WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_TREAD_JUMP);
+
+    WorkModule::unable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_SPECIAL);
+    WorkModule::unable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_GROUND_SPECIAL);
+    WorkModule::unable_transition_term_group_ex(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_SPECIAL);
+    WorkModule::unable_transition_term_group_ex(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_GROUND_SPECIAL);
+    WorkModule::unable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_JUMP_AERIAL);
+}
+
 pub unsafe extern "C" fn special_hi_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
     StatusModule::init_settings(
         fighter.module_accessor,
@@ -60,7 +76,8 @@ pub unsafe extern "C" fn special_hi_main(fighter: &mut L2CFighterCommon) -> L2CV
     WorkModule::set_int(fighter.module_accessor, 0,FIGHTER_GANON_STATUS_SPECIAL_HI_EFFECT);
     VarModule::off_flag(fighter.battle_object,ganon::instance::flag::SPECIAL_HI_START_RECHARGE);
 
-    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_CLIFF);
+    WorkModule::on_flag(fighter.module_accessor,*FIGHTER_INSTANCE_WORK_ID_FLAG_DISABLE_SPECIAL_HI_CONTINUOUS);
+    
     fighter.sub_change_motion_by_situation(L2CValue::Hash40s("special_hi"), L2CValue::Hash40s("special_air_hi"), false.into());
     fighter.sub_change_kinetic_type_by_situation(FIGHTER_KINETIC_TYPE_MOTION.into(),FIGHTER_KINETIC_TYPE_MOTION_AIR.into());
     fighter.sub_set_ground_correct_by_situation(false.into());
@@ -72,6 +89,7 @@ pub unsafe extern "C" fn special_hi_main(fighter: &mut L2CFighterCommon) -> L2CV
     let is_air = StatusModule::situation_kind(fighter.module_accessor) == *SITUATION_KIND_AIR;
     WorkModule::set_flag(fighter.module_accessor, is_air,FIGHTER_GANON_STATUS_SPECIAL_HI_RUSH_FLAG_AIR);
 
+    special_hi_enable_terms(fighter);
     fighter.sub_shift_status_main(L2CValue::Ptr(special_hi_main_loop as *const () as _))
 }
 
@@ -84,16 +102,17 @@ unsafe extern "C" fn special_hi_main_loop(fighter: &mut L2CFighterCommon) -> L2C
         return 1.into();
     }
     if CancelModule::is_enable_cancel(fighter.module_accessor) {
-        if fighter.sub_transition_group_check_air_attack().get_bool() {
-            FighterControlModuleImpl::update_attack_air_kind(fighter.module_accessor, true);
-            return 1.into();
+        let is_special = fighter.global_table[CMD_CAT1].get_i32() & *FIGHTER_PAD_CMD_CAT1_FLAG_SPECIAL_ANY != 0;
+        if !is_special {
+            if fighter.sub_wait_ground_check_common(false.into()).get_bool()
+            || fighter.sub_air_check_fall_common().get_bool() 
+            {
+                //KineticModule::mul_speed(fighter.module_accessor, &Vector3f{x: 1.0, y: 0.75 , z: 1.0}, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_ALL); 
+                EffectModule::kill_kind(fighter.module_accessor, Hash40::new("pitb_ikaros_wing_flare"), true, true);
+                FighterControlModuleImpl::update_attack_air_kind(fighter.module_accessor, true);
+                return 1.into();
+            }
         }
-        /*
-        if fighter.sub_wait_ground_check_common(false.into()).get_bool() ||
-        fighter.sub_air_check_fall_common().get_bool() {
-            return 1.into();
-        } 
-        */
     } 
 
     if StatusModule::is_situation_changed(fighter.module_accessor) {
@@ -303,15 +322,10 @@ pub unsafe extern "C" fn special_hi_rush_main(fighter: &mut L2CFighterCommon) ->
     let lr = PostureModule::lr(fighter.module_accessor);
     WorkModule::set_float(fighter.module_accessor, lr, FIGHTER_GANON_STATUS_SPECIAL_HI_RUSH_TURN_DIR_INIT);
 
-    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_LANDING);
-    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_ATTACK);
-    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_ESCAPE);
-    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_ITEM_THROW);
-    WorkModule::enable_transition_term_group(fighter.module_accessor, *FIGHTER_STATUS_TRANSITION_GROUP_CHK_AIR_TREAD_JUMP);
-
     MotionModule::change_motion(fighter.module_accessor, Hash40::new("special_hi_hold"), 0.0, 0.0, true, 0.0, false, false);
     GroundModule::correct(fighter.module_accessor, GroundCorrectKind(*GROUND_CORRECT_KIND_AIR));    
 
+    special_hi_enable_terms(fighter);
     fighter.global_table[SUB_STATUS2].assign(&L2CValue::Ptr(special_hi_rush_substatus as *const () as _));
     fighter.sub_shift_status_main(L2CValue::Ptr(special_hi_rush_main_loop as *const () as _))
 }
@@ -336,13 +350,15 @@ unsafe extern "C" fn special_hi_rush_main_loop(fighter: &mut L2CFighterCommon) -
         return 1.into();
     }
     if CancelModule::is_enable_cancel(fighter.module_accessor) || true {
-        if fighter.sub_transition_group_check_air_attack().get_bool() {
-            FighterControlModuleImpl::update_attack_air_kind(fighter.module_accessor, true);
-            return 1.into();
-        }
-        if fighter.sub_wait_ground_check_common(false.into()).get_bool() ||
-        fighter.sub_air_check_fall_common().get_bool() {
-            return 1.into();
+        let is_special = fighter.global_table[CMD_CAT1].get_i32() & *FIGHTER_PAD_CMD_CAT1_FLAG_SPECIAL_ANY != 0;
+        if !is_special {
+            if fighter.sub_wait_ground_check_common(false.into()).get_bool()
+            || fighter.sub_air_check_fall_common().get_bool() 
+            {
+                EffectModule::kill_kind(fighter.module_accessor, Hash40::new("pitb_ikaros_wing_flare"), true, true);
+                FighterControlModuleImpl::update_attack_air_kind(fighter.module_accessor, true);
+                return 1.into();
+            }
         }
     } 
 

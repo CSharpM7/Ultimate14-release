@@ -6,7 +6,41 @@ unsafe extern "C" fn attack_dash_main(fighter: &mut L2CFighterCommon) -> L2CValu
     smashline::original_status(Main, fighter, *FIGHTER_SIMON_STATUS_KIND_ATTACK_LW32)(fighter)
 }
 
+unsafe extern "C" fn specials_pre(fighter: &mut L2CFighterCommon) -> L2CValue {
+    return smashline::original_status(Pre, fighter, *FIGHTER_STATUS_KIND_SPECIAL_S)(fighter);
+    /*
+    StatusModule::init_settings(
+        fighter.module_accessor,
+        SituationKind(*SITUATION_KIND_NONE),
+        *FIGHTER_KINETIC_TYPE_UNIQ,
+        *GROUND_CORRECT_KIND_KEEP as u32,
+        GroundCliffCheckKind(*GROUND_CORRECT_KIND_NONE),
+        true,
+        *FIGHTER_STATUS_WORK_KEEP_FLAG_NONE_FLAG,
+        *FIGHTER_STATUS_WORK_KEEP_FLAG_NONE_INT,
+        *FIGHTER_STATUS_WORK_KEEP_FLAG_NONE_FLOAT,
+        0,
+    );
+    FighterStatusModuleImpl::set_fighter_status_data(
+        fighter.module_accessor,
+        false,
+        *FIGHTER_TREADED_KIND_DISABLE,
+        false,
+        false,
+        false,
+        (*FIGHTER_LOG_MASK_FLAG_ATTACK_KIND_SPECIAL_S
+            | *FIGHTER_LOG_MASK_FLAG_ACTION_CATEGORY_ATTACK | *FIGHTER_LOG_MASK_FLAG_ACTION_TRIGGER_ON) as u64,
+        *FIGHTER_STATUS_ATTR_START_TURN as u32,
+        *FIGHTER_POWER_UP_ATTACK_BIT_SPECIAL_S as u32,
+        0,
+    );
+    0.into()
+     */
+}
+
+
 unsafe extern "C" fn specials_main(fighter: &mut L2CFighterCommon) -> L2CValue {
+    println!("Special s?");
     if !super::is_richter(fighter.module_accessor) {smashline::original_status(Main, fighter, *FIGHTER_STATUS_KIND_SPECIAL_S)(fighter);}
     VarModule::on_flag(fighter.battle_object, fighter::instance::flag::DISABLE_SPECIAL_S);
 
@@ -24,6 +58,7 @@ unsafe extern "C" fn specials_main(fighter: &mut L2CFighterCommon) -> L2CValue {
 }
 
 unsafe extern "C" fn specials_main_loop(fighter: &mut L2CFighterCommon) -> L2CValue {
+    println!("Richter?");
     if fighter.sub_transition_group_check_air_cliff().get_bool() {
         return 1.into();
     }
@@ -64,6 +99,7 @@ unsafe extern "C" fn specials_main_loop(fighter: &mut L2CFighterCommon) -> L2CVa
 pub fn install(agent: &mut smashline::Agent) {
     agent.status(Main, *FIGHTER_STATUS_KIND_ATTACK_DASH, attack_dash_main);
 
-    agent.status(Main, *FIGHTER_STATUS_KIND_SPECIAL_S, specials_main);
-    agent.status(End, *FIGHTER_STATUS_KIND_SPECIAL_S, empty_status);
+    agent.status(Pre, richter::STATUS_KIND_SPECIAL_S_DASH, specials_pre);
+    agent.status(Main, richter::STATUS_KIND_SPECIAL_S_DASH, specials_main);
+    agent.status(End, richter::STATUS_KIND_SPECIAL_S_DASH, empty_status);
 }

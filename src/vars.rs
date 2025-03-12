@@ -189,6 +189,7 @@ pub mod lucas_pkfreeze {
 
 pub mod richter {
     pub const BOOK_STATUS_KIND_SHIELD : i32 = 3;
+    pub const STATUS_KIND_SPECIAL_S_DASH : i32 = 0x1EC;
     pub mod instance {
         pub mod flag {
             pub const HAS_BOOK: i32 = 0x0100;
